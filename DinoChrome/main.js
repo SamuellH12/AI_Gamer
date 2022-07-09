@@ -3,11 +3,12 @@ var contouObs = false;
 var gameOver = false;
 var jurassic = []; //geração atual
 var qtDinos = 15; //quantidade de dinos por geração
+var qtDinosNextGen = qtDinos; //para ser possível alterar o valor da próxima geração sem impactar a atual
 var dAtual = 0; //dinossauro que tá jogando agora
 var gen = 0; //geração atual
 var qtdGens = 20;
 var escolhidosPorGen = 2;
-var taxaDeMutacao = 0.0001;
+var taxaDeMutacao = 0.2;
 var autoPass = true;
 const win = this.window;
 
@@ -54,12 +55,10 @@ function seleciona() //-1
         {
             let temp = Dino.hibrido(melhores[i], melhores[j]);
             jurassic.push(temp);
-            console.table(jurassic)
         }
         if(jurassic.length < qtDinos && i == melhores.length-1){ i=-1; } //se a quantidade de hibridos ainda não tiver completa, volta ao começo
     }
     console.log("Híbridos gerados");
-    console.log("Iniciando as mutações")
     //gerar mutações
     for(let i=0; i<jurassic.length; i++)
     {
@@ -164,11 +163,13 @@ function main(){
         if(gen == qtdGens)
         {
             document.getElementById("restartGen").style.display = "block";
+            console.log(jurassic);
             return;
         }
 
         if( once ==-1 ) //pre game -> inicializar valores ou gerar nova geração
         {
+            qtDinos = qtDinosNextGen;
             if(gen == 0){ inicializar(); }
             else
             {
@@ -190,10 +191,9 @@ function main(){
 
 
 
-
-
-
-//UI de usuário
+/***************************
+*   User Interface - UI
+***************************/
 
 setTimeout( function()
 {
@@ -203,7 +203,7 @@ setTimeout( function()
       <div>Dinos Per Gen: <input id="dinPGen" type='number' value=15> </div>
       <div>Number of Gens: <input id="nGen" type='number' value=20> </div>
       <div>Selected per Gen: <input id="selec" type='number' value=2> </div>
-      <div>Mutation Factor: <input id="taxa" type='number' max="1" value=0.0001> </div>
+      <div>Mutation Factor: <input id="taxa" type='number' max="1" value=0.2> </div>
       <div>Automatically Pass Gen - Yes:<input id="autoPassYes" name="autoPass" type="radio" checked value="true"> /  No:<input id="autoPassNo" name="autoPass" type="radio" value="false"></div>
       <button onclick="salvarInput()" >Save Options</button>
 
@@ -244,7 +244,7 @@ function continua()
 
 function salvarInput(){
 
-    qtDinos = parseInt( document.getElementById("dinPGen").value, 10 );
+    qtDinosNextGen = parseInt( document.getElementById("dinPGen").value, 10 );
     qtdGens = parseInt( document.getElementById("nGen").value, 10 );
     escolhidosPorGen =  parseInt( document.getElementById("selec").value, 10 );
     taxaDeMutacao = parseFloat( document.getElementById("taxa").value )
