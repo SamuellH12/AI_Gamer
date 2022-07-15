@@ -66,6 +66,7 @@ function seleciona() //-1
         
     }
     console.log("Mutantes gerados");
+    document.getElementById("textolog").innerHTML = "New Generation Ready!";
 
     once = 0; //start a new game
 }
@@ -79,8 +80,6 @@ function startGame()    //0
         once = -1; //se já testei todos os dinos em vez de restart vou para a seleção dos melhores
         return;
     }    
-
-    console.log("Start a new game")
 
     //da start no jogo
     simulateKey(32); 
@@ -127,9 +126,11 @@ function testaDinos()   //1
     }    
 
     //conta a pontuação de cada dino (quantos obstáculos cada um passou)
+    //as vezes conta cactos grandes como 2 (/*°-°)\
     if(distObst < 0 && contouObs == false){
         jurassic[dAtual].pontos++;
         contouObs = true;
+        document.getElementById("textolog").innerHTML = "Score: " + jurassic[dAtual].pontos;
     } else {
         contouObs = false;
     }    
@@ -176,6 +177,8 @@ function main(){
                 if(autoPass){ seleciona(); }
                 else{ document.getElementById("continue").style.display = "block";}
             }
+            document.getElementById("downButton").style.display = "block";
+            document.getElementById("upButton").style.display = "block";
         }
         else
         if( once == 0){ startGame(); } //0
@@ -200,20 +203,24 @@ setTimeout( function()
     document.getElementById('InfosAI').innerHTML += `
     <div>
         
-      <div>Dinos Per Gen: <input id="dinPGen" type='number' value=15> </div>
-      <div>Number of Gens: <input id="nGen" type='number' value=20> </div>
-      <div>Selected per Gen: <input id="selec" type='number' value=2> </div>
-      <div>Mutation Factor: <input id="taxa" type='number' max="1" value=0.2> </div>
+      <div>Dinos Per Gen:       <input id="dinPGen" type='number' value=15> </div>
+      <div>Number of Gens:      <input id="nGen"    type='number' value=20> </div>
+      <div>Selected per Gen:    <input id="selec"   type='number' value=2> </div>
+      <div>Mutation Factor:     <input id="taxa"    type='number' max="1" value=0.2> </div>
       <div>Automatically Pass Gen - Yes:<input id="autoPassYes" name="autoPass" type="radio" checked value="true"> /  No:<input id="autoPassNo" name="autoPass" type="radio" value="false"></div>
       <button onclick="salvarInput()" >Save Options</button>
 
       <p id="textolog"> ... </p>
 
-      <button id="start"                            onclick="start()">      Start                </button>
-      <button id="restartGen" style="display: none" onclick="restartGen()"> Restart the last Gen </button>
-      <button id="continue"   style="display: none" onClick="continua()">   Continue             </button>
-      <button                 style="display: none">                        Upload a Dino        </button>
-      <button                 style="display: none" >                       download a Dino      </button>
+      <button id="start"                            onclick="start()">       Start               </button>
+      <button id="restartGen" style="display: none" onclick="restartGen()">  Restart the last Gen</button>
+      <button id="continue"   style="display: none" onClick="continua()">    Continue            </button>
+      <button id="downButton" style="display: none" onClick="showDownUp(1)"> Upload a Dino       </button>
+      <button id="upButton"   style="display: none" onClick="showDownUp(2)"> Download a Dino     </button>
+      <input  id="dinoDown"   style="display: none" type='number' >
+      <input  id="dinoUp"     style="display: none" type='text'   hint="dino.JSON">
+      <button id="confirmDown"style="display: none" onClick="download()">           Confirm      </button>
+      <button id="confirmUp"  style="display: none" onClick="upload()">             Confirm      </button>
         
     </div>
   
@@ -249,22 +256,65 @@ function salvarInput(){
     escolhidosPorGen =  parseInt( document.getElementById("selec").value, 10 );
     taxaDeMutacao = parseFloat( document.getElementById("taxa").value )
     autoPass = document.getElementById("autoPassYes").checked;
-    console.log(autoPass)
     document.getElementById("textolog").innerHTML = "Options Saved!";
 }
 
 function download(n)
 {
-    console.log("Em breve");
-    // saveAs(new Blob( [ JSON.stringify(jurassic[0]) ], { type: "text/plain;charset=utf-8" }), "static.txt")
+    let numDino = parseInt( document.getElementById("dinoDown").value, 10 );
+
+    if(numDino < qtDinos){
+        saveAs(new Blob( [ JSON.stringify(jurassic[0]) ], 
+        { type: "text/plain;charset=utf-8" }), 
+        "dino"+numDino+"gen"+(gen+1)+".txt");
+        document.getElementById("textolog").innerHTML = "Successfully Downloaded!";
+    }
+    else
+    {
+        document.getElementById("textolog").innerHTML = "Error! Number must be between "+0+" and "+(qtDinos-1);
+    }
+
+    document.getElementById("downButton").style.display = "block";
+    document.getElementById("upButton").style.display = "block";
+    document.getElementById("dinoDown").style.display = "none";
+    document.getElementById("confirmDown").style.display = "none";
 }
 
-function uoload(n)
+function upload(n)
 {
-    console.log("Em breve");
+    let newDinoJ = JSON.parse( document.getElementById("dinoUp").value );
+    let newDino = new Dino(); 
+    
+    newDino = Dino.hibrido(newDinoJ, newDinoJ); //gambiarra ( *^-^)
+
+    console.log(newDino);
+    jurassic.push(newDino);
+    qtDinos++;
+    document.getElementById("textolog").innerHTML = "Dino add at end of the generation";
+    document.getElementById("downButton").style.display = "block";
+    document.getElementById("upButton").style.display = "block";
+    document.getElementById("dinoUp").style.display = "none";
+    document.getElementById("confirmUp").style.display = "none";
 }
 
-//main();
+function showDownUp(x)
+{
+    document.getElementById("downButton").style.display = "none";
+    document.getElementById("upButton").style.display = "none";
+
+    if(x == 1)
+    {
+        document.getElementById("dinoUp").style.display = "block";
+        document.getElementById("confirmUp").style.display = "block";
+        document.getElementById("textolog").innerHTML = "Enter the dino json:";
+    }
+    else
+    {
+        document.getElementById("dinoDown").style.display = "block";
+        document.getElementById("confirmDown").style.display = "block";
+        document.getElementById("textolog").innerHTML = "Enter the dino number:";
+    }
+}
 
 
 //access the values of the brain of dinos: jurassic[0].brain.weigth_ho.data[0][0]
