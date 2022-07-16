@@ -1,14 +1,14 @@
 # Dino AI
 Uma rede neural simples construída para jogar o famoso joguinho do Dinossauro do Chrome!
 
-![](./readme_images/DinoAI_UI_image.png)
+![UI](./readme_images/DinoAI_UI_image.png)
 
 ## Como a rede funciona? 🤔
 
-A base é uma [rede neural genérica](./RedeNeural.js), com: 
+A base é uma rede neural genérica, com: 
 - **6 nós de entrada**;
-- **6 nós ocultos**; e em apenas 
-- **1 camada de saída**.
+- **6 nós ocultos** em apenas uma camada; e  
+- **1 nó de saída**.
 
 ### Camada de Entrada
 As 6 camadas da **entrada** recebem os seguintes valores:
@@ -38,6 +38,6 @@ dependendo do valor da saída:
 
 
 ### Códigos de outras pessoas/organizações:
-- **index.html**: Esse é o jogo original do Dinossauro. A página foi baixada de: [chrome://dino/](chrome://dino/) e quase não foi alterada, com exceção do import dos scripts utilizados e de uma div com o id "InfosAI".
-- **duckJump.js**: É o código que simula as teclas sendo pressionadas. Esse código não é de minha autoria. Créditos: (Glauber Funez)[https://gist.github.com/GlauberF/d8278ce3aa592389e6e3d4e758e6a0c2]
-- **FileSaver.js**: 
+- **index.html**: Esse é o jogo original do Dinossauro. A página foi baixada de: [chrome://dino](chrome://dino/) e quase não foi alterada, com exceção do import dos scripts utilizados e de uma div com o id "InfosAI".
+- **duckJump.js**: É o código que simula as teclas sendo pressionadas. Esse código não é de minha autoria. Créditos: [Glauber Funez](https://gist.github.com/GlauberF/d8278ce3aa592389e6e3d4e758e6a0c2)
+- **FileSaver.js**: Uso para facilitar o download do arquivo dos Dinos 😅. Créditos: [eligrey](https://github.com/eligrey/FileSaver.js/blob/master/dist/FileSaver.js)
