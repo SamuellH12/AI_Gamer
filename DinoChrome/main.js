@@ -101,7 +101,8 @@ function testaDinos()   //1
 {
     if( win.Runner.instance_.crashed ) //testa se houve colisão (método do próprio jogo)
     {
-        console.log("Dino", dAtual ,"perdeu (T-T)  -> ", jurassic[dAtual].pontos, " pontos")
+        console.log("Dino", dAtual ,"perdeu (T-T)  -> ", jurassic[dAtual].pontos, " pontos");
+        document.getElementById("textolog").innerHTML = "GAME OVER";
         once = 0;
         dAtual++;
         return;
@@ -264,14 +265,14 @@ function download(n)
     let numDino = parseInt( document.getElementById("dinoDown").value, 10 );
 
     if(numDino < qtDinos){
-        saveAs(new Blob( [ JSON.stringify(jurassic[0]) ], 
+        saveAs(new Blob( [ JSON.stringify(jurassic[numDino]) ], 
         { type: "text/plain;charset=utf-8" }), 
-        "dino"+numDino+"gen"+(gen+1)+".txt");
+        "Dino"+numDino+"_Gen"+(gen+1)+"_Score"+jurassic[numDino].pontos+".txt");
         document.getElementById("textolog").innerHTML = "Successfully Downloaded!";
     }
     else
     {
-        document.getElementById("textolog").innerHTML = "Error! Number must be between "+0+" and "+(qtDinos-1);
+        document.getElementById("textolog").innerHTML = "Error! Number must be between 0 and "+(qtDinos-1);
     }
 
     document.getElementById("downButton").style.display = "block";
