@@ -7,6 +7,18 @@ function deriv_sigmoid(x){
     return x * (1-x);
 }
 
+function lreLu(x)
+{
+    if( x >= 0){ return x; }
+    else{ return 0.01 * x; }
+}
+
+function deriv_lreLu(x)
+{
+    if( x < 0 ){ return 0.01; }
+    else { return 1; }
+}
+
 //CLASSE REDE NEURAL
 //Dividida basicamente em train e predict, além do construtor da classe, claro. Mais explicações a seguir:
 class RedeNeural {
@@ -44,13 +56,13 @@ class RedeNeural {
         //Processa os valores que vêm do INPUT para a OCULTA
         let hidden = Matrix.multiply(this.weigth_ih, input );   //multiplica os PESOS entrada->oculta pela matriz do input
         hidden = Matrix.add(hidden, this.bias_ih);              //adiciona o bias com uma soma simples ao resultado da operação
-        hidden.map( signoid )                                   //coloca o resultado na função de ativação, nesse caso a signoid
+        hidden.map( lreLu )                                   //coloca o resultado na função de ativação, nesse caso a signoid
 
 
         //processa os valores que vieram da camada OCULTA para o OUTPUT
         let output = Matrix.multiply(this.weigth_ho, hidden);   //multiplica os PESOS oculta->saída pela matriz que veio da oculta (que acabamos de processar)
         output = Matrix.add(output, this.bias_ho);              //adiciona o respectivo bias aqui também
-        output.map(signoid);                                    //pega essa matriz e passa ela pela função de ativação
+        output.map( lreLu );                                    //pega essa matriz e passa ela pela função de ativação
         
 
         output = Matrix.MatrixToArray(output);  //transforma nosso output em um array
@@ -72,19 +84,19 @@ class RedeNeural {
 
         let hidden = Matrix.multiply(this.weigth_ih, input );
         hidden = Matrix.add(hidden, this.bias_ih);              //calcula a passagem do input pra camada oculta (ver detalhes em PREDICT)
-        hidden.map( signoid )
+        hidden.map( lreLu )
 
         let output = Matrix.multiply(this.weigth_ho, hidden);
         output = Matrix.add(output, this.bias_ho);              //calcula a passagem da oculta pro output (ver detalhes em PREDICT)
-        output.map(signoid);
+        output.map( lreLu );
 
 
         //BACKPROPAGATION -> vai retornando e calculando o que precisa ser alterado na rede.
 
         //OUT - HIDE ------                                        //importante: derivada = taxa de variação de uma função   y = f(x) em relação à x, dada pela relação ∆x/∆y
         let expected = Matrix.arrayToMatrix(target);        //transforma nossa saída esperada em uma matriz
-        let output_error = Matrix.sub(expected, output);    //calcula o erro da saída, que é: nossa saída esperada menos a saída da rede (calculada acima)
-        let deriv_out = Matrix.map(output, deriv_sigmoid);  //cria uma derivada do nosso erro de saída, passando nosso valores pela derivada da função de ativação
+        let output_error = Matrix.sub(expected, output);   //calcula o erro da saída, que é: nossa saída esperada menos a saída da rede (calculada acima)
+        let deriv_out = Matrix.map(output, deriv_lreLu );  //cria uma derivada do nosso erro de saída, passando nosso valores pela derivada da função de ativação
         
         let gradiant = Matrix.hadamard(deriv_out, output_error);     //calcula as alterações necessárias multiplicando(em hadamard) a derivada do erro de saída pelo próprio erro 
         gradiant = Matrix.esc_multiply(gradiant, this.learning_rate);//e depois multiplica por nosso learning rate, para controlar o tamanho  das alterações
@@ -99,7 +111,7 @@ class RedeNeural {
         //HIDE - IN ------
         let weigth_ho_T = Matrix.transpose(this.weigth_ho);             //pega uma transposta da nossa matriz de pesos do hide-out
         let hidden_error = Matrix.multiply(weigth_ho_T, output_error);  //gera o erro da nossa oculta multiplicando os pesos da oculta pelo nosso erro de saída
-        let deriv_hide = Matrix.map( hidden, deriv_sigmoid);            //cria uma derivada do erro da oculta com a função derivada sigmoid
+        let deriv_hide = Matrix.map( hidden, deriv_lreLu );            //cria uma derivada do erro da oculta com a função derivada sigmoid
 
         let gradiant_hide = Matrix.hadamard(deriv_hide, hidden_error);  //cria nossa matriz com as alterações que serão feitas
         gradiant_hide = Matrix.esc_multiply(gradiant_hide, this.learning_rate); //e multiplica ela pelo learning rate
