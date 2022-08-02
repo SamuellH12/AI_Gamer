@@ -41,3 +41,6 @@ dependendo do valor da saída:
 - **index.html**: Esse é o jogo original do Dinossauro. A página foi baixada de: [chrome://dino](chrome://dino/) e quase não foi alterada, com exceção do import dos scripts utilizados e de uma div com o id "InfosAI".
 - **duckJump.js**: É o código que simula as teclas sendo pressionadas. Esse código não é de minha autoria. Créditos: [Glauber Funez](https://gist.github.com/GlauberF/d8278ce3aa592389e6e3d4e758e6a0c2)
 - **FileSaver.js**: Uso para facilitar o download do arquivo dos Dinos 😅. Créditos: [eligrey](https://github.com/eligrey/FileSaver.js/blob/master/dist/FileSaver.js)
+
+## Você pode testar alguns dinossauros já treinados!
+Vá na pasta [dinos_treinados](./dinos_treinados) e veja alguns dinossauros que já evoluíram por algumas gerações. Você pode adicioná-los a sua própria geração para testá-los.

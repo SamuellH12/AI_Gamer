@@ -110,12 +110,12 @@ function testaDinos()   //1
 
     //pega os inputs
     let dino = win.Runner.instance_.tRex;
-    var altDino = dino.yPos;
-    var distObst = 10000;
-    var altObst = 0;
-    var largObst = 0;
-    var compObst = 0;
-    var vel = win.Runner.instance_.currentSpeed;
+    let altDino = dino.yPos;
+    let distObst = 10000;
+    let altObst = 0;
+    let largObst = 0;
+    let compObst = 0;
+    let vel = win.Runner.instance_.currentSpeed;
 
     if(win.Runner.instance_.horizon.obstacles.length > 0)
     {
