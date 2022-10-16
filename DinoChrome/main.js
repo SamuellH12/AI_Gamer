@@ -11,7 +11,8 @@ var escolhidosPorGen = 2;
 var taxaDeMutacao = 0.2;
 var autoPass = true;
 const win = this.window;
-
+var cnt = 0;
+var graf = 0;
 
 function inicializar()  //-1
 {  
@@ -23,6 +24,10 @@ function inicializar()  //-1
     
     once = 0;
 }    
+
+function signoid(x){
+    return 1/(1 + Math.exp(-x));
+}
 
 
 function seleciona() //-1
@@ -95,7 +100,10 @@ function startGame()    //0
     once = 1;   //e que comecem os jogos!!!
 }    
 
-
+function getdata()
+{
+    return graf;
+}
 
 function testaDinos()   //1
 {
@@ -154,7 +162,16 @@ function testaDinos()   //1
     {
         simulateKey(40, "up");
     }    
-        
+
+    Plotly.extendTraces('chart',{ y:[[ signoid(comando) ]]}, [0]);
+    cnt++;
+    if(cnt > 60) {
+        Plotly.relayout('chart',{
+            xaxis: {
+                range: [cnt-50,cnt+10]
+            }
+        });
+    }
 }    
 
 
@@ -171,6 +188,11 @@ function main(){
 
         if( once ==-1 ) //pre game -> inicializar valores ou gerar nova geração
         {
+            
+            if(cnt==0){
+                Plotly.newPlot('chart',[{y:[0], type:'line'}]);
+            }
+
             qtDinos = qtDinosNextGen;
             if(gen == 0){ inicializar(); }
             else
@@ -201,8 +223,11 @@ function main(){
 
 setTimeout( function()
 {
-    document.getElementById('InfosAI').innerHTML += `
-    <div>
+    document.getElementById('InfosAI').innerHTML = `
+    <div style="display: flex;" >
+    <div style="display: block; width: 40vw;">
+        <h1 style="margin: 0;"> Dino AI </h1>
+        <h3 style="margin-top: 0;"> by <a href="https://github.com/SamuellH12"> SamuellH12 </a> </h3>
         
       <div>Dinos Per Gen:       <input id="dinPGen" type='number' value=15> </div>
       <div>Number of Gens:      <input id="nGen"    type='number' value=20> </div>
@@ -223,9 +248,14 @@ setTimeout( function()
       <button id="confirmDown"style="display: none" onClick="download()">           Confirm      </button>
       <button id="confirmUp"  style="display: none" onClick="upload()">             Confirm      </button>
         
+      <h3 id="InfoDinoGerenation"></h3>
+
     </div>
-  
-    <h3 id="InfoDinoGerenation"></h3>
+
+    <div id="chart" style="width: 60vw; height:50vh"></div>
+    <p> Problema de desempenho por causa do gráfico. Adicionar opção show/hide no futuro </p>
+
+    </div>
     ` ;
 }, 30)
 
@@ -318,8 +348,31 @@ function showDownUp(x)
 }
 
 
+
+
+//////////////
+
+
+
+setTimeout(
+    function(){
+
+       
+    }
+    , 10
+)
+
+
+
+
+
 //access the values of the brain of dinos: jurassic[0].brain.weigth_ho.data[0][0]
 /*
+
+setInterval(function(){
+
+    
+},15);
 testar se ouve colisão
 if( win.Runner.instance_.horizon.obstacles.length > 0 &&
     win.checkForCollision(win.Runner.instance_.horizon.obstacles[0], win.Runner.instance_.tRex) ) //testa se houve colisão (método do próprio jogo)
