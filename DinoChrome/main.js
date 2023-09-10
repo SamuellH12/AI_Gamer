@@ -12,7 +12,7 @@ var taxaDeMutacao = 0.2;
 var autoPass = true;
 const win = this.window;
 var cnt = 0;
-var graf = 0;
+var graf = false;
 
 function inicializar()  //-1
 {  
@@ -100,11 +100,6 @@ function startGame()    //0
     once = 1;   //e que comecem os jogos!!!
 }    
 
-function getdata()
-{
-    return graf;
-}
-
 function testaDinos()   //1
 {
     if( win.Runner.instance_.crashed ) //testa se houve colisão (método do próprio jogo)
@@ -163,14 +158,13 @@ function testaDinos()   //1
         simulateKey(40, "up");
     }    
 
-    Plotly.extendTraces('chart',{ y:[[ signoid(comando) ]]}, [0]);
-    cnt++;
-    if(cnt > 60) {
-        Plotly.relayout('chart',{
-            xaxis: {
-                range: [cnt-50,cnt+10]
-            }
-        });
+    if(graf == true)
+    {
+        Plotly.extendTraces('chart',{ y:[[ signoid(comando) ]]}, [0]);
+        cnt++;
+        if(cnt > 60) {
+            Plotly.relayout('chart',{ xaxis: {range: [cnt-50,cnt+10]}  } );
+        }
     }
 }    
 
@@ -188,10 +182,6 @@ function main(){
 
         if( once ==-1 ) //pre game -> inicializar valores ou gerar nova geração
         {
-            
-            if(cnt==0){
-                Plotly.newPlot('chart',[{y:[0], type:'line'}]);
-            }
 
             qtDinos = qtDinosNextGen;
             if(gen == 0){ inicializar(); }
@@ -200,8 +190,6 @@ function main(){
                 if(autoPass){ seleciona(); }
                 else{ document.getElementById("continue").style.display = "block";}
             }
-            document.getElementById("downButton").style.display = "block";
-            document.getElementById("upButton").style.display = "block";
         }
         else
         if( once == 0){ startGame(); } //0
@@ -239,6 +227,7 @@ setTimeout( function()
       <p id="textolog"> ... </p>
 
       <button id="start"                            onclick="start()">       Start               </button>
+      <button id="graphButton"style="display: none" onclick="showGraph()">   Graphic             </button>
       <button id="restartGen" style="display: none" onclick="restartGen()">  Restart the last Gen</button>
       <button id="continue"   style="display: none" onClick="continua()">    Continue            </button>
       <button id="downButton" style="display: none" onClick="showDownUp(1)"> Upload a Dino       </button>
@@ -253,7 +242,6 @@ setTimeout( function()
     </div>
 
     <div id="chart" style="width: 60vw; height:50vh"></div>
-    <p> Problema de desempenho por causa do gráfico. Adicionar opção show/hide no futuro </p>
 
     </div>
     ` ;
@@ -262,6 +250,9 @@ setTimeout( function()
 function start()
 {
     document.getElementById("start").style.display = "none";
+    document.getElementById("downButton").style.display = "block";
+    document.getElementById("upButton").style.display = "block";
+    document.getElementById("graphButton").style.display = "block";
     main();
 }
 
@@ -345,6 +336,25 @@ function showDownUp(x)
         document.getElementById("confirmDown").style.display = "block";
         document.getElementById("textolog").innerHTML = "Enter the dino number:";
     }
+}
+
+function showGraph()
+{
+    if(graf == false)
+    {
+        if(cnt == 0){
+            Plotly.newPlot('chart',[{y:[0], type:'line'}]);
+        }
+
+        document.getElementById('chart').style.display = "block";
+        graf = true;
+    }
+    else
+    {
+        document.getElementById('chart').display = "none";
+        graf = false;
+    }
+
 }
 
 

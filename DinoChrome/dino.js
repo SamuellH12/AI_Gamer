@@ -62,9 +62,6 @@ class Dino {
     }
 
 
-
-
-
     mutar(fator)
     {
 
